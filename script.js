@@ -36,18 +36,35 @@ class Ratte {
 }
 
 function calcboost(time){
-    return 5*(1-Math.exp(-10*time))
+    let a = 5
+    let b = 1
+    let c = 1/8
+    time /= 1000
+    console.log("test", 1/time)
+    if (time < c){ 
+        
+        let n = Math.log(a/b)/Math.log(2)
+        let m = a/(Math.pow(c,n))
+        console.log(m*Math.pow(time,n))
+        return m*Math.pow(time,n)
+        
+
+    } else {
+        console.log(a)
+        return a
+    }
 }
 
 let lastclick = Date.now()
 addEventListener("click", ({offsetX, offsetY}) => {
     
-    console.log(offsetX-player.position.x)
+    //console.log(offsetX-player.position.x)
 
 
 
     let alpha = Math.atan2((offsetY-player.position.y),(offsetX-player.position.x))
     let boost = calcboost(Date.now()-lastclick)
+    //console.log(Date.now()-lastclick)
     
     player.velocity.x += Math.cos(alpha)*boost
     player.velocity.y += Math.sin(alpha)*boost
