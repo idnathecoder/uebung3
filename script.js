@@ -31,6 +31,11 @@
                 x: this.x = [],
                 y: this.y = []
             }
+
+            this.screenPosition = {
+                x: 0,
+                y: 0
+            }
         }
 
         startLine(){
@@ -197,6 +202,12 @@
                 return false
             }
         }
+
+        moveFrame(){
+            if(this.position.x > 800){
+
+            }
+        }
         
         drawLine(){
             c.beginPath();
@@ -337,8 +348,8 @@
 
     function calcboost(time){
         let a = 5
-        let b = 0.5
-        let c = 1/6
+        let b = 0.8
+        let c = 1/3.5
         time /= 1000
         if (time < c){ 
             let n = Math.log(a/b)/Math.log(2)
