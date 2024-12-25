@@ -1,6 +1,8 @@
 const canvas = document.querySelector("canvas")
 const c = canvas.getContext("2d")
 
+const friction = 0.98   
+
 class Ratte {
     constructor() {
         this.radius = 25
@@ -37,7 +39,7 @@ class Ratte {
         player.previousPositions.y = []
     }
 
-    handleCollision(obstacle){
+    handleCollision(obstacle) {
         // Rechte Seite des Hindernisses
         if (
             this.position.x - this.radius <= obstacle.position.x + obstacle.width &&
@@ -45,11 +47,19 @@ class Ratte {
             (this.position.y + this.radius > obstacle.position.y &&
             this.position.y - this.radius < obstacle.position.y + obstacle.height)
         ) {
-            this.velocity.x *= -1;
-            this.position.x += 1;
-            //console.log("rechts")
+            if (obstacle.mass === 0) {
+                this.velocity.x *= -1;
+                this.position.x += 1;
+            } else {
+                obstacle.velocity.x = (2 * this.velocity.x) / (obstacle.mass + 1);
+                obstacle.velocity.y = (2 * this.velocity.y) / (obstacle.mass + 1);
+    
+                this.velocity.x = -(obstacle.mass - 1) * this.velocity.x / (obstacle.mass + 1);
+                this.velocity.y = (obstacle.mass - 1) * this.velocity.y / (obstacle.mass + 1);
+                this.position.x += 1;
+            }
         }
-
+    
         // Linke Seite des Hindernisses
         if (
             this.position.x + this.radius >= obstacle.position.x &&
@@ -57,12 +67,19 @@ class Ratte {
             (this.position.y + this.radius > obstacle.position.y &&
             this.position.y - this.radius < obstacle.position.y + obstacle.height)
         ) {
-            this.velocity.x *= -1;
-            this.position.x -= 1;
-            //console.log("links")
-
+            if (obstacle.mass === 0) {
+                this.velocity.x *= -1;
+                this.position.x -= 1;
+            } else {
+                obstacle.velocity.x = (2 * this.velocity.x) / (obstacle.mass + 1);
+                obstacle.velocity.y = (2 * this.velocity.y) / (obstacle.mass + 1);
+    
+                this.velocity.x = -(obstacle.mass - 1) * this.velocity.x / (obstacle.mass + 1);
+                this.velocity.y = (obstacle.mass - 1) * this.velocity.y / (obstacle.mass + 1);
+                this.position.x -= 1;
+            }
         }
-
+    
         // Obere Seite des Hindernisses
         if (
             this.position.y + this.radius >= obstacle.position.y &&
@@ -70,12 +87,19 @@ class Ratte {
             (this.position.x + this.radius > obstacle.position.x &&
             this.position.x - this.radius < obstacle.position.x + obstacle.width)
         ) {
-            this.velocity.y *= -1;
-            this.position.y -= 1;
-            //console.log("oben")
-
+            if (obstacle.mass === 0) {
+                this.velocity.y *= -1;
+                this.position.y -= 1;
+            } else {
+                obstacle.velocity.x = (2 * this.velocity.x) / (obstacle.mass + 1);
+                obstacle.velocity.y = (2 * this.velocity.y) / (obstacle.mass + 1);
+    
+                this.velocity.x = (obstacle.mass - 1) * this.velocity.x / (obstacle.mass + 1);
+                this.velocity.y = -(obstacle.mass - 1) * this.velocity.y / (obstacle.mass + 1);
+                this.position.y -= 1;
+            }
         }
-
+    
         // Untere Seite des Hindernisses
         if (
             this.position.y - this.radius <= obstacle.position.y + obstacle.height &&
@@ -83,14 +107,20 @@ class Ratte {
             (this.position.x + this.radius > obstacle.position.x &&
             this.position.x - this.radius < obstacle.position.x + obstacle.width)
         ) {
-            this.velocity.y *= -1;
-            this.position.y += 1;
-            //console.log("unten")
-
+            if (obstacle.mass === 0) {
+                this.velocity.y *= -1;
+                this.position.y += 1;
+            } else {
+                obstacle.velocity.x = (2 * this.velocity.x) / (obstacle.mass + 1);
+                obstacle.velocity.y = (2 * this.velocity.y) / (obstacle.mass + 1);
+    
+                this.velocity.x = (obstacle.mass - 1) * this.velocity.x / (obstacle.mass + 1);
+                this.velocity.y = -(obstacle.mass - 1) * this.velocity.y / (obstacle.mass + 1);
+                this.position.y += 1;
+            }
         }
-
-
     }
+    
     
     drawLine(){
         c.beginPath();
@@ -114,10 +144,11 @@ class Ratte {
     update(){
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
-        this.velocity.x *= 0.97 //0.96
-        this.velocity.y *= 0.97
+        this.velocity.x *= friction //0.96
+        this.velocity.y *= friction
 
         this.handleCollision(obstacle1)
+        this.handleCollision(obstacle2)
 
         this.draw()
         if(this.recordposition === 1){
@@ -138,9 +169,10 @@ class Ratte {
 }
 
 class Obstacle {
-    constructor(width, height, posx, posy) {
+    constructor(width, height, posx, posy, mass) {
         this.width = width
         this.height = height
+        this.mass = mass //mass = 1 entspricht der Masse des Spielers
         this.color = "red"
 
         
@@ -150,13 +182,79 @@ class Obstacle {
             x: posx,
             y: posy
         }
+
+        this.velocity = {
+            x: 0,
+            y: 0
+        }
         
     }
+
+    handleCollision(obstacle) {
+        // Rechte Seite des Hindernisses
+        if (
+            this.position.x + this.width >= obstacle.position.x &&
+            this.position.x + this.width < obstacle.position.x + 10 &&
+            (this.position.y + this.height > obstacle.position.y &&
+            this.position.y < obstacle.position.y + obstacle.height)
+        ) {
+            this.velocity.x *= -1;
+            this.position.x -= 1;
+        }
+    
+        // Linke Seite des Hindernisses
+        if (
+            this.position.x <= obstacle.position.x + obstacle.width &&
+            this.position.x > obstacle.position.x + obstacle.width - 10 &&
+            (this.position.y + this.height > obstacle.position.y &&
+            this.position.y < obstacle.position.y + obstacle.height)
+        ) {
+            this.velocity.x *= -1;
+            this.position.x += 1;
+        }
+    
+        // Obere Seite des Hindernisses
+        if (
+            this.position.y + this.height >= obstacle.position.y &&
+            this.position.y + this.height < obstacle.position.y + 10 &&
+            (this.position.x + this.width > obstacle.position.x &&
+            this.position.x < obstacle.position.x + obstacle.width)
+        ) {
+            this.velocity.y *= -1;
+            this.position.y -= 1;
+        }
+    
+        // Untere Seite des Hindernisses
+        if (
+            this.position.y <= obstacle.position.y + obstacle.height &&
+            this.position.y > obstacle.position.y + obstacle.height - 10 &&
+            (this.position.x + this.width > obstacle.position.x &&
+            this.position.x < obstacle.position.x + obstacle.width)
+        ) {
+            this.velocity.y *= -1;
+            this.position.y += 1;
+        }
+    }
+    
+
     draw(){
         c.beginPath()           
         c.rect(this.position.x, this.position.y, this.width, this.height)
         c.fillStyle = this.color
         c.fill()        
+    }
+
+    update(){
+        if(this.mass != 0){
+            this.position.x += this.velocity.x
+            this.position.y += this.velocity.y
+            this.velocity.x *= friction
+            this.velocity.y *= friction
+
+            this.handleCollision(obstacle1)
+
+            this.draw()
+        }
     }
 }
 
@@ -201,7 +299,8 @@ addEventListener("click", ({offsetX, offsetY}) => {
 })
 
 const player = new Ratte()
-const obstacle1 = new Obstacle(200, 200, 100, 100)
+const obstacle1 = new Obstacle(200, 200, 100, 100, 0)
+const obstacle2 = new Obstacle(50, 50, 500, 500, 2)
 
 
 function animate(){
@@ -209,6 +308,9 @@ function animate(){
     player.update()
     player.draw()
     obstacle1.draw()
+    obstacle2.update()
+    obstacle2.draw()
+    
 
     requestAnimationFrame(animate)
 }
