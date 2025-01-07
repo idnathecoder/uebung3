@@ -2,15 +2,16 @@
     const c = canvas.getContext("2d")
 
 
-
-
-
-
     const friction = 0.97
+    
+    let framepos = {
+        x: 0,
+        y: 0
+    }
 
 
 
-    class Ratte {
+    class Player {
         constructor() {
             this.radius = 25
             this.color = "green"
@@ -203,12 +204,6 @@
             }
         }
 
-        moveFrame(){
-            if(this.position.x > 800){
-
-            }
-        }
-        
         drawLine(){
             c.beginPath();
             c.moveTo(this.previousPositions.x[0], this.previousPositions.y[0]); // Start at the previous position
@@ -229,10 +224,48 @@
         }
 
         update(){
-            this.position.x += this.velocity.x
-            this.position.y += this.velocity.y
+
+            if (this.position.x > 1000){
+                if(this.velocity.x > 0){
+                    framepos.x = this.velocity.x
+                } else {
+                    this.position.x += this.velocity.x
+                }
+                
+            } else if(this.position.x < 200){
+                if(this.velocity.x < 0){
+                    framepos.x = this.velocity.x
+                } else {
+                    this.position.x += this.velocity.x
+                }
+
+            } else {
+                this.position.x += this.velocity.x
+            }
+
+            if (this.position.y > 600){
+                if(this.velocity.y > 0){
+                    framepos.y = this.velocity.y
+                } else {
+                    this.position.y += this.velocity.y
+                }
+                
+            } else if(this.position.y < 200){
+                if(this.velocity.y < 0){
+                    framepos.y = this.velocity.y
+                } else {
+                    this.position.y += this.velocity.y
+                }
+
+            } else {
+                this.position.y += this.velocity.y
+            }
+
+            
             this.velocity.x *= friction //0.96
             this.velocity.y *= friction
+            framepos.x *= friction
+            framepos.y *= friction
 
             this.handleCollision(obstacle1)
             this.handleCollision(obstacle2)
@@ -241,8 +274,8 @@
             if(this.recordposition === 1){
                 if(this.previousPositions.x.length >= 10){
                     for(let counter = 0; counter < this.previousPositions.x.length-1; counter++){
-                        this.previousPositions.x[counter] = this.previousPositions.x[counter+1]
-                        this.previousPositions.y[counter] = this.previousPositions.y[counter+1]
+                        this.previousPositions.x[counter] = this.previousPositions.x[counter+1] - framepos.x
+                        this.previousPositions.y[counter] = this.previousPositions.y[counter+1] - framepos.y
                     }
                     this.previousPositions.x.pop()
                     this.previousPositions.y.pop()
@@ -324,6 +357,54 @@
                 this.position.y += 1;
             }
         }
+
+        is_touching_right(obstacle, accuracy){
+            if(this.position.x + this.width >= obstacle.position.x &&
+                this.position.x + this.width < obstacle.position.x + accuracy &&
+                (this.position.y + this.height > obstacle.position.y &&
+                this.position.y < obstacle.position.y + obstacle.height)
+            ){
+                return true
+            } else {
+                return false
+            }
+        }
+    
+        is_touching_left(obstacle, accuracy){
+            if(this.position.x <= obstacle.position.x + obstacle.width &&
+                this.position.x > obstacle.position.x + obstacle.width - accuracy &&
+                (this.position.y + this.height > obstacle.position.y &&
+                this.position.y < obstacle.position.y + obstacle.height)
+            ){
+                return true
+            } else {
+                return false
+            }
+        }
+    
+        is_touching_top(obstacle, accuracy){
+            if(this.position.y + this.height >= obstacle.position.y &&
+                this.position.y + this.height < obstacle.position.y + accuracy &&
+                (this.position.x + this.width > obstacle.position.x &&
+                this.position.x < obstacle.position.x + obstacle.width)
+            ){
+                return true
+            } else {
+                return false
+            }
+        }
+    
+        is_touching_bottom(obstacle, accuracy){
+            if(this.position.y <= obstacle.position.y + obstacle.height &&
+                this.position.y > obstacle.position.y + obstacle.height - accuracy &&
+                (this.position.x + this.width > obstacle.position.x &&
+                this.position.x < obstacle.position.x + obstacle.width)
+            ){
+                return true
+            } else {
+                return false
+            }
+        }
         
         draw(){
             c.beginPath()           
@@ -334,13 +415,17 @@
 
         update(){
             if(this.mass != 0){
-                this.position.x += this.velocity.x
-                this.position.y += this.velocity.y
+                this.position.x += this.velocity.x - framepos.x
+                this.position.y += this.velocity.y - framepos.y
                 this.velocity.x *= friction
                 this.velocity.y *= friction
 
                 this.handleCollision(obstacle1)
 
+                this.draw()
+            } else {
+                this.position.x -= framepos.x
+                this.position.y -= framepos.y
                 this.draw()
             }
         }
@@ -355,7 +440,7 @@
             let n = Math.log(a/b)/Math.log(2)
             let m = a/(Math.pow(c,n))
             //console.log(m*Math.pow(time,n))
-            if(m*Math.pow(time,n) > a -1){
+            if(m*Math.pow(time,n) > a-1){
                 player.startLine()
             } else{
                 player.clearpreviousPositions()
@@ -392,7 +477,7 @@
 
     //--------------------------
 
-    const player = new Ratte()
+    const player = new Player()
     const obstacle1 = new Obstacle(200, 200, 100, 100, 0)
     const obstacle2 = new Obstacle(50, 50, 500, 500, 1)
 
@@ -402,6 +487,7 @@
         player.update()
         player.draw()
         obstacle1.draw()
+        obstacle1.update()
         obstacle2.update()
         obstacle2.draw()
 
