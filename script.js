@@ -75,13 +75,11 @@
                         x: this.velocity.x,
                         y: this.velocity.y
                     }
-
                     this.velocity.x=-(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     this.velocity.y=(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
     
                     obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                    console.log("test")
                 }
             }
             if(this.is_touching_right(obstacle, accuracy2)){
@@ -101,13 +99,11 @@
                         x: this.velocity.x,
                         y: this.velocity.y
                     }
-
                     this.velocity.x=-(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     this.velocity.y=(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
     
                     obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                    console.log("test")
                 }
             }
             if (this.is_touching_left(obstacle, accuracy2)){
@@ -127,13 +123,11 @@
                         x: this.velocity.x,
                         y: this.velocity.y
                     }
-
                     this.velocity.x=(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     this.velocity.y=(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
     
                     obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                    console.log("test")
                 }
             }
             if (this.is_touching_top(obstacle, accuracy2)){
@@ -154,15 +148,11 @@
                         x: this.velocity.x,
                         y: this.velocity.y
                     }
-
-
                     this.velocity.x=(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     this.velocity.y=-(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
 
                     obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                    this.position.y += pushback
-                    
                 }
             }
             if(this.is_touching_bottom(obstacle, accuracy2)){
@@ -281,6 +271,7 @@
 
             this.velocity.x *= friction //0.96
             this.velocity.y *= friction
+
             framevelocity.x *= friction
             framevelocity.y *= friction
 
@@ -490,7 +481,7 @@
 
     const player = new Player()
     const obstacle1 = new Obstacle(200, 200, 100, 100, 0)
-    const obstacle2 = new Obstacle(50, 50, 500, 500, 1)
+    const obstacle2 = new Obstacle(50, 50, 500, 500, 2)
     const obstacle3 = new Obstacle(1000, 200, -100, -100, 0)
 
 
