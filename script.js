@@ -1,10 +1,11 @@
     const canvas = document.querySelector("canvas")
     const c = canvas.getContext("2d")
 
-
+    const accuracy1 = 10
+    const pushback = 5
     const friction = 0.97
     
-    let framepos = {
+    let framevelocity = {
         x: 0,
         y: 0
     }
@@ -54,7 +55,6 @@
 
         handleCollision(obstacle) {
             const m1 = 1
-            const accuracy1 = 10
             let accuracy2
             if(obstacle.width < obstacle.height){
                 accuracy2 = obstacle.width/2
@@ -64,9 +64,12 @@
 
             // Rechte Seite des Hindernisses
             if (this.is_touching_right(obstacle, accuracy1)) {
+                if (framevelocity.x != 0){
+                    this.velocity.x = framevelocity.x
+                    framevelocity.x = 0
+                }
                 if (obstacle.mass === 0) {
                     this.velocity.x *= -1;
-                    this.position.x += 1;
                 } else {
                     const v11 = {
                         x: this.velocity.x,
@@ -78,17 +81,21 @@
     
                     obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
+                    console.log("test")
                 }
             }
-            if(this.is_touching_right(obstacle, accuracy2) && obstacle.mass != 0){
-                this.position.x += 1
+            if(this.is_touching_right(obstacle, accuracy2)){
+                this.position.x += pushback 
             }
         
             // Linke Seite des Hindernisses
             if (this.is_touching_left(obstacle, accuracy1)) {
+                if (framevelocity.x != 0){
+                    this.velocity.x = framevelocity.x
+                    framevelocity.x = 0
+                }
                 if (obstacle.mass === 0) {
                     this.velocity.x *= -1;
-                    this.position.x -= 1;
                 } else {
                     const v11 = {
                         x: this.velocity.x,
@@ -100,18 +107,21 @@
     
                     obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                    this.position.x -= 1 
+                    console.log("test")
                 }
             }
-            if(this.is_touching_left(obstacle, accuracy2) && obstacle.mass != 0){
-                this.position.x -= 1
+            if (this.is_touching_left(obstacle, accuracy2)){
+                this.position.x -= pushback
             }
         
             // Obere Seite des Hindernisses
             if (this.is_touching_top(obstacle, accuracy1)) {
+                if (framevelocity.y != 0){
+                    this.velocity.y = framevelocity.y
+                    framevelocity.y = 0
+                }
                 if (obstacle.mass === 0) {
                     this.velocity.y *= -1;
-                    this.position.y -= 1;
                 } else {
                     const v11 = {
                         x: this.velocity.x,
@@ -123,35 +133,40 @@
     
                     obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                    this.position.y -= 1
-                    
+                    console.log("test")
                 }
             }
-            if(this.is_touching_top(obstacle, accuracy2) && obstacle.mass != 0){
-                this.position.y -= 1
+            if (this.is_touching_top(obstacle, accuracy2)){
+                this.position.y -= pushback
             }
         
             // Untere Seite des Hindernisses
             if (this.is_touching_bottom(obstacle, accuracy1)) {
+                if (framevelocity.y != 0){
+                    this.velocity.y = framevelocity.y
+                    framevelocity.y = 0
+                }
                 if (obstacle.mass === 0) {
                     this.velocity.y *= -1;
-                    this.position.y += 1;
+                    this.position.y += 5
                 } else {
                     const v11 = {
                         x: this.velocity.x,
                         y: this.velocity.y
                     }
 
+
                     this.velocity.x=(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     this.velocity.y=-(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-    
+
                     obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
                     obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                    this.position.y += 1 
+                    this.position.y += pushback
+                    
                 }
             }
-            if(this.is_touching_bottom(obstacle, accuracy2) && obstacle.mass != 0){
-                this.position.y += 1
+            if(this.is_touching_bottom(obstacle, accuracy2)){
+                this.position.y += pushback
             }
         }
 
@@ -224,17 +239,20 @@
         }
 
         update(){
+            this.handleCollision(obstacle1)
+            this.handleCollision(obstacle2)
+            this.handleCollision(obstacle3)
 
             if (this.position.x > 1000){
                 if(this.velocity.x > 0){
-                    framepos.x = this.velocity.x
+                    framevelocity.x = this.velocity.x
                 } else {
                     this.position.x += this.velocity.x
                 }
                 
             } else if(this.position.x < 200){
                 if(this.velocity.x < 0){
-                    framepos.x = this.velocity.x
+                    framevelocity.x = this.velocity.x
                 } else {
                     this.position.x += this.velocity.x
                 }
@@ -245,14 +263,14 @@
 
             if (this.position.y > 600){
                 if(this.velocity.y > 0){
-                    framepos.y = this.velocity.y
+                    framevelocity.y = this.velocity.y
                 } else {
                     this.position.y += this.velocity.y
                 }
                 
             } else if(this.position.y < 200){
                 if(this.velocity.y < 0){
-                    framepos.y = this.velocity.y
+                    framevelocity.y = this.velocity.y
                 } else {
                     this.position.y += this.velocity.y
                 }
@@ -261,21 +279,19 @@
                 this.position.y += this.velocity.y
             }
 
-            
             this.velocity.x *= friction //0.96
             this.velocity.y *= friction
-            framepos.x *= friction
-            framepos.y *= friction
+            framevelocity.x *= friction
+            framevelocity.y *= friction
 
-            this.handleCollision(obstacle1)
-            this.handleCollision(obstacle2)
+            
 
             this.draw()
             if(this.recordposition === 1){
                 if(this.previousPositions.x.length >= 10){
                     for(let counter = 0; counter < this.previousPositions.x.length-1; counter++){
-                        this.previousPositions.x[counter] = this.previousPositions.x[counter+1] - framepos.x
-                        this.previousPositions.y[counter] = this.previousPositions.y[counter+1] - framepos.y
+                        this.previousPositions.x[counter] = this.previousPositions.x[counter+1] - framevelocity.x
+                        this.previousPositions.y[counter] = this.previousPositions.y[counter+1] - framevelocity.y
                     }
                     this.previousPositions.x.pop()
                     this.previousPositions.y.pop()
@@ -311,56 +327,50 @@
         }
 
         handleCollision(obstacle) {
-            const accuracy = 10
+            let accuracy2
+            if(obstacle.width < obstacle.height){
+                accuracy2 = obstacle.width/2
+            } else {
+                accuracy2 = obstacle.height/2
+            }
 
             // Rechte Seite des Hindernisses
-            if (
-                this.position.x + this.width >= obstacle.position.x &&
-                this.position.x + this.width < obstacle.position.x + 10 &&
-                (this.position.y + this.height > obstacle.position.y &&
-                this.position.y < obstacle.position.y + obstacle.height)
-            ) {
+            if (this.is_touching_right(obstacle, accuracy1)) {
                 this.velocity.x *= -1;
-                this.position.x -= 1;
             }
+            if (this.is_touching_right(obstacle, accuracy2)){
+                this.position.x += pushback;
+            }
+            
         
             // Linke Seite des Hindernisses
-            if (
-                this.position.x <= obstacle.position.x + obstacle.width &&
-                this.position.x > obstacle.position.x + obstacle.width - 10 &&
-                (this.position.y + this.height > obstacle.position.y &&
-                this.position.y < obstacle.position.y + obstacle.height)
-            ) {
+            if (this.is_touching_left(obstacle, accuracy1)) {
                 this.velocity.x *= -1;
-                this.position.x += 1;
+            }
+            if (this.is_touching_left(obstacle, accuracy2)){
+                this.position.x -= pushback;
             }
         
             // Obere Seite des Hindernisses
-            if (
-                this.position.y + this.height >= obstacle.position.y &&
-                this.position.y + this.height < obstacle.position.y + 10 &&
-                (this.position.x + this.width > obstacle.position.x &&
-                this.position.x < obstacle.position.x + obstacle.width)
-            ) {
+            if (this.is_touching_top(obstacle, accuracy1)) {
                 this.velocity.y *= -1;
-                this.position.y -= 1;
+            }
+            if (this.is_touching_top(obstacle, accuracy2)){
+                this.position.y -= pushback;
             }
         
             // Untere Seite des Hindernisses
-            if (
-                this.position.y <= obstacle.position.y + obstacle.height &&
-                this.position.y > obstacle.position.y + obstacle.height - 10 &&
-                (this.position.x + this.width > obstacle.position.x &&
-                this.position.x < obstacle.position.x + obstacle.width)
-            ) {
+            if (this.is_touching_bottom(obstacle, accuracy1)) {
                 this.velocity.y *= -1;
-                this.position.y += 1;
+            }
+            if (this.is_touching_bottom(obstacle, accuracy2)){
+                this.position.y += pushback;
             }
         }
 
         is_touching_right(obstacle, accuracy){
-            if(this.position.x + this.width >= obstacle.position.x &&
-                this.position.x + this.width < obstacle.position.x + accuracy &&
+            if(this.position.x <= obstacle.position.x + obstacle.width &&
+                this.position.x > obstacle.position.x + obstacle.width - accuracy &&
                 (this.position.y + this.height > obstacle.position.y &&
                 this.position.y < obstacle.position.y + obstacle.height)
             ){
@@ -369,10 +379,10 @@
                 return false
             }
         }
-    
+
         is_touching_left(obstacle, accuracy){
-            if(this.position.x <= obstacle.position.x + obstacle.width &&
-                this.position.x > obstacle.position.x + obstacle.width - accuracy &&
+            if(this.position.x + this.width >= obstacle.position.x &&
+                this.position.x + this.width < obstacle.position.x + accuracy &&
                 (this.position.y + this.height > obstacle.position.y &&
                 this.position.y < obstacle.position.y + obstacle.height)
             ){
@@ -415,17 +425,18 @@
 
         update(){
             if(this.mass != 0){
-                this.position.x += this.velocity.x - framepos.x
-                this.position.y += this.velocity.y - framepos.y
+                this.position.x += this.velocity.x - framevelocity.x
+                this.position.y += this.velocity.y - framevelocity.y
                 this.velocity.x *= friction
                 this.velocity.y *= friction
 
                 this.handleCollision(obstacle1)
+                this.handleCollision(obstacle3)
 
                 this.draw()
             } else {
-                this.position.x -= framepos.x
-                this.position.y -= framepos.y
+                this.position.x -= framevelocity.x
+                this.position.y -= framevelocity.y
                 this.draw()
             }
         }
@@ -480,6 +491,7 @@
     const player = new Player()
     const obstacle1 = new Obstacle(200, 200, 100, 100, 0)
     const obstacle2 = new Obstacle(50, 50, 500, 500, 1)
+    const obstacle3 = new Obstacle(1000, 200, -100, -100, 0)
 
 
     function animate(){
@@ -488,8 +500,11 @@
         player.draw()
         obstacle1.draw()
         obstacle1.update()
-        obstacle2.update()
         obstacle2.draw()
+        obstacle2.update()
+        obstacle3.draw()
+        obstacle3.update()
+        
 
         requestAnimationFrame(animate)
     }
