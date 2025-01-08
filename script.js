@@ -484,10 +484,7 @@
         
     
         draw() {
-            
-                c.drawImage(this.img, this.x, this.y, 100, 100);  // Zeichne das Bild
-                console.log("out")
-            
+            c.drawImage(this.img, this.x, this.y, 30, 30);  // Zeichne das Bild
         }
     }
     
@@ -564,10 +561,13 @@
 
     function animate(){
         c.clearRect(0, 0, canvas.width, canvas.height)
+        
+        reward.draw()
+        
         player.update()
         player.draw()
 
-        reward.draw()
+        
 
         for (let i = 0; i < allobstacles.length; i++) {
             allobstacles[i].draw()
