@@ -10,6 +10,11 @@
         y: 0
     }
 
+    let frameposition = {
+        x: 0,
+        y: 0
+    }
+
 
 
     class Player {
@@ -486,14 +491,18 @@
         }
 
         relocate(){
-            this.position.x = Math.floor(Math.random() * (2200 - 100 + 1)) + 100
-            this.position.y = Math.floor(Math.random() * (1400 - 100 + 1)) + 100;
+            this.position.x = Math.floor(Math.random() * (2200 - 100 + 1)) + 100 - frameposition.x
+            this.position.y = Math.floor(Math.random() * (1400 - 100 + 1)) + 100 - frameposition.y
+            const mitte={
+                x: this.position.x+15,
+                y: this.position.y+15
+            }
             for (let i = 0; i < allobstacles.length; i++) {
                 if(
-                    this.mitte.x + 15 > allobstacles[i].position.x &&
-                    this.mitte.x - 15 < allobstacles[i].position.x + allobstacles[i].width &&
-                    this.mitte.y + 15 > allobstacles[i].position.y &&
-                    this.mitte.y - 15 < allobstacles[i].position.y + allobstacles[i].height
+                    mitte.x + 15 > allobstacles[i].position.x &&
+                    mitte.x - 15 < allobstacles[i].position.x + allobstacles[i].width &&
+                    mitte.y + 15 > allobstacles[i].position.y &&
+                    mitte.y - 15 < allobstacles[i].position.y + allobstacles[i].height
                 ){
                     this.relocate()
                 }
@@ -510,10 +519,14 @@
             this.position.x -= framevelocity.x
             this.position.y -= framevelocity.y
 
-            let mitte={
+            frameposition.x += framevelocity.x
+            frameposition.y += framevelocity.y
+
+            const mitte={
                 x: this.position.x+15,
                 y: this.position.y+15
             }
+
             if(
                 mitte.x-15 - player.position.x - player.radius < 0 &&
                 -mitte.x-15 + player.position.x - player.radius < 0 &&
@@ -591,6 +604,17 @@
         new Obstacle(400, 250, 600, 500, 0),
 
         new Obstacle(50, 80, 1500, 410, 0),
+        new Obstacle(100, 400, 1300, 800, 10),
+        new Obstacle(400, 100, 1500, 700, 0),
+
+        new Obstacle(300, 300, 1100, 320, 15),
+
+        new Obstacle(30, 30, 380, 1000, 0.1),
+        new Obstacle(30, 30, 380, 1030, 0.1),
+        new Obstacle(30, 30, 380, 1060, 0.1),
+
+        new Obstacle(50, 50, 680, 1030, 1),
+        new Obstacle(50, 50, 750, 1060, 1),
 
 
 
@@ -606,6 +630,8 @@
         
         player.update()
         player.draw()
+        console.log(player.position.x)
+        console.log(player.position.y)
         
 
         

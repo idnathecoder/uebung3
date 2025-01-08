@@ -18,10 +18,16 @@ canvas {
 }
 
 body > div > div {
-    margin: 30p;
+
+    margin: 10px;
+    width: 300px;
+
     background-color: white;
+    align-content: center;
 }
 
 #counter {
-    font-size: x-large;
+    font-size: 50px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    text-align: center;
 }
