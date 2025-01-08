@@ -475,16 +475,55 @@
     }
 
     class Star {
-        constructor(x, y) {
-            this.x = x;        // Mittelpunkt des Sterns (x)
-            this.y = y;        // Mittelpunkt des Sterns (y)
+        constructor() {
+            this.position = {
+                x: 400,
+                y: 500  
+            }
             this.img = new Image();  // Erstelle ein neues Image-Objekt
             this.img.src = "star.jpg";   // Setze den Bildpfad
+            this.score = 0
+        }
+
+        relocate(){
+            this.position.x = Math.floor(Math.random() * (2200 - 100 + 1)) + 100
+            this.position.y = Math.floor(Math.random() * (1400 - 100 + 1)) + 100;
+            for (let i = 0; i < allobstacles.length; i++) {
+                if(
+                    this.mitte.x + 15 > allobstacles[i].position.x &&
+                    this.mitte.x - 15 < allobstacles[i].position.x + allobstacles[i].width &&
+                    this.mitte.y + 15 > allobstacles[i].position.y &&
+                    this.mitte.y - 15 < allobstacles[i].position.y + allobstacles[i].height
+                ){
+                    this.relocate()
+                }
+            }
+            
         }
         
     
         draw() {
-            c.drawImage(this.img, this.x, this.y, 30, 30);  // Zeichne das Bild
+            c.drawImage(this.img, this.position.x, this.position.y, 30, 30);  // Zeichne das Bild
+        }
+
+        update(){
+            this.position.x -= framevelocity.x
+            this.position.y -= framevelocity.y
+
+            let mitte={
+                x: this.position.x+15,
+                y: this.position.y+15
+            }
+            if(
+                mitte.x-15 - player.position.x - player.radius < 0 &&
+                -mitte.x-15 + player.position.x - player.radius < 0 &&
+                mitte.y-15 - player.position.y - player.radius < 0 &&
+                -mitte.y-15 + player.position.y - player.radius < 0
+            ){
+                this.score += 1
+                document.getElementById("counter").innerText = this.score
+                this.relocate()
+            }
         }
     }
     
@@ -562,16 +601,18 @@
     function animate(){
         c.clearRect(0, 0, canvas.width, canvas.height)
         
+        reward.update()
         reward.draw()
         
         player.update()
         player.draw()
+        
 
         
 
         for (let i = 0; i < allobstacles.length; i++) {
-            allobstacles[i].draw()
             allobstacles[i].update()
+            allobstacles[i].draw()
         }
 
         requestAnimationFrame(animate)
