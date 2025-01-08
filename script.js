@@ -222,16 +222,29 @@
         }
 
         draw(){
-            c.beginPath()
+                    c.beginPath();
+            // Erstelle einen radialen Farbverlauf
+            let gradient = c.createRadialGradient(this.position.x, this.position.y, 0, this.position.x, this.position.y, this.radius);
+            
+            // Füge Farben zum Farbverlauf hinzu: von der Mitte nach außen
+            gradient.addColorStop(0, '#00734e');  // Lila/Magenta für die Mitte (ähnlich der Enderperle)
+            gradient.addColorStop(0.5, '#00a84f'); // Dunkleres Lila/Magenta in der Mitte (noch intensiver)
+            gradient.addColorStop(1, '#1abc9c');  // Türkis für den Rand (heller und leuchtend)
+        
+
+            // Setze den Farbverlauf als Füllfarbe
+            c.fillStyle = gradient;
+            
+            // Zeichne den Kreis
             c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-            c.fillStyle = this.color
-            c.fill()
+            c.fill();
         }
 
         update(){
-            this.handleCollision(obstacle1)
-            this.handleCollision(obstacle2)
-            this.handleCollision(obstacle3)
+            for (let i = 0; i < allobstacles.length; i++) {
+                this.handleCollision(allobstacles[i])
+
+            }
 
             if (this.position.x > 1000){
                 if(this.velocity.x > 0){
@@ -408,10 +421,32 @@
         }
         
         draw(){
-            c.beginPath()           
-            c.rect(this.position.x, this.position.y, this.width, this.height)
-            c.fillStyle = this.color
-            c.fill()        
+            c.beginPath();
+            c.rect(this.position.x, this.position.y, this.width, this.height);
+        
+            
+            let gradient = c.createRadialGradient(
+                this.position.x + this.width / 2,  // Mittelpunkt des Rechtecks in x
+                this.position.y + this.height / 2, // Mittelpunkt des Rechtecks in y
+                0,                                  // Innerer Radius (Mitte des Rechtecks)
+                this.position.x + this.width / 2,  // Mittelpunkt des Rechtecks in x
+                this.position.y + this.height / 2, // Mittelpunkt des Rechtecks in y
+                this.width / 2                      // Äußerer Radius (Rand des Rechtecks)
+            );
+        
+            // Füge Farben zum Farbverlauf hinzu: von innen nach außen
+            gradient.addColorStop(0, '#ff3333');  
+            if(this.mass === 0){
+                gradient.addColorStop(0, '#ff3333');
+                gradient.addColorStop(1, '#bd0f0f'); 
+            } else {
+                gradient.addColorStop(0, '#f54040');
+                gradient.addColorStop(1, '#d42222')
+            }
+            // Setze den Farbverlauf als Füllfarbe
+            c.fillStyle = gradient;
+            // Fülle das Rechteck
+            c.fill();     
         }
 
         update(){
@@ -421,8 +456,14 @@
                 this.velocity.x *= friction
                 this.velocity.y *= friction
 
-                this.handleCollision(obstacle1)
-                this.handleCollision(obstacle3)
+                for (let i = 0; i < allobstacles.length; i++) {
+                    if (this != allobstacles[i]){
+                        this.handleCollision(allobstacles[i])
+                    }
+                    
+    
+                }
+
 
                 this.draw()
             } else {
@@ -432,6 +473,24 @@
             }
         }
     }
+
+    class Star {
+        constructor(x, y) {
+            this.x = x;        // Mittelpunkt des Sterns (x)
+            this.y = y;        // Mittelpunkt des Sterns (y)
+            this.img = new Image();  // Erstelle ein neues Image-Objekt
+            this.img.src = "star.jpg";   // Setze den Bildpfad
+        }
+        
+    
+        draw() {
+            
+                c.drawImage(this.img, this.x, this.y, 100, 100);  // Zeichne das Bild
+                console.log("out")
+            
+        }
+    }
+    
 
     function calcboost(time){
         let a = 5
@@ -480,22 +539,40 @@
     //--------------------------
 
     const player = new Player()
-    const obstacle1 = new Obstacle(200, 200, 100, 100, 0)
-    const obstacle2 = new Obstacle(50, 50, 500, 500, 2)
-    const obstacle3 = new Obstacle(1000, 200, -100, -100, 0)
+    const reward = new Star(500, 300)
+    const allobstacles = [
+        
+        new Obstacle(2300, 200, -100, -100, 0),
+        new Obstacle(2300, 200, -100, 1200, 0),
+        new Obstacle(200, 1500, -100, -100, 0),
+        new Obstacle(200, 1500, 2000, -100, 0),
+        
+        new Obstacle(200, 200, 100, 100, 0),
+        new Obstacle(50, 50, 500, 500, 2),
+        
+        new Obstacle(400, 400, 600, 0, 0),
+        new Obstacle(400, 80, 600, 410, 4),
+        new Obstacle(400, 250, 600, 500, 0),
+
+        new Obstacle(50, 80, 1500, 410, 0),
+
+
+
+    ];
+
 
 
     function animate(){
         c.clearRect(0, 0, canvas.width, canvas.height)
         player.update()
         player.draw()
-        obstacle1.draw()
-        obstacle1.update()
-        obstacle2.draw()
-        obstacle2.update()
-        obstacle3.draw()
-        obstacle3.update()
-        
+
+        reward.draw()
+
+        for (let i = 0; i < allobstacles.length; i++) {
+            allobstacles[i].draw()
+            allobstacles[i].update()
+        }
 
         requestAnimationFrame(animate)
     }
