@@ -1,858 +1,216 @@
-    const canvas = document.querySelector("canvas")
-    const c = canvas.getContext("2d")
+const canvas = document.querySelector("canvas")
+const c = canvas.getContext("2d")
 
-    const accuracy1 = 10
-    const pushback = 5
-    const friction = 0.97
-    
-    let framevelocity = {
-        x: 0,
-        y: 0
-    }
+const accuracy1 = 10
+const pushback = 5
+const friction = 0.97
 
-    let frameposition = {
-        x: 0,
-        y: 0
-    }
+let framevelocity = {
+    x: 0,
+    y: 0
+}
 
-
-
-    class Player {
-        constructor() {
-            this.radius = 25
-            this.color = "green"
-
-            //TODO change position according to width and according to height.
-            this.position = {
-                x: 500,
-                y: 200  
-            }
-            
-            this.velocity = {
-                x: 0,
-                y: 0,    
-            }
-
-            this.recordposition = 0
-            this.previousPositions = {
-                x: this.x = [],
-                y: this.y = []
-            }
-
-            this.screenPosition = {
-                x: 0,
-                y: 0
-            }
-        }
-
-        startLine(){
-            this.recordposition = 1
-        }
-
-        endLine(){
-            this.recordposition = 0
-        }
-
-        clearpreviousPositions(){
-            player.previousPositions.x = []
-            player.previousPositions.y = []
-        }
-
-        handleCollision(obstacle) {
-            const m1 = 1
-            let accuracy2
-            if(obstacle.width < obstacle.height){
-                accuracy2 = obstacle.width/2
-            } else {
-                accuracy2 = obstacle.height/2
-            }
-
-            // Rechte Seite des Hindernisses
-            if (this.is_touching_right(obstacle, accuracy1)) {
-                if (framevelocity.x != 0){
-                    this.velocity.x = framevelocity.x
-                    framevelocity.x = 0
-                }
-                if (obstacle.mass === 0) {
-                    this.velocity.x *= -1;
-                } else {
-                    const v11 = {
-                        x: this.velocity.x,
-                        y: this.velocity.y
-                    }
-                    this.velocity.x=-(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
-                    this.velocity.y=(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-    
-                    obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
-                    obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                }
-            }
-            if(this.is_touching_right(obstacle, accuracy2)){
-                this.position.x += pushback 
-            }
-        
-            // Linke Seite des Hindernisses
-            if (this.is_touching_left(obstacle, accuracy1)) {
-                if (framevelocity.x != 0){
-                    this.velocity.x = framevelocity.x
-                    framevelocity.x = 0
-                }
-                if (obstacle.mass === 0) {
-                    this.velocity.x *= -1;
-                } else {
-                    const v11 = {
-                        x: this.velocity.x,
-                        y: this.velocity.y
-                    }
-                    this.velocity.x=-(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
-                    this.velocity.y=(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-    
-                    obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
-                    obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                }
-            }
-            if (this.is_touching_left(obstacle, accuracy2)){
-                this.position.x -= pushback
-            }
-        
-            // Obere Seite des Hindernisses
-            if (this.is_touching_top(obstacle, accuracy1)) {
-                if (framevelocity.y != 0){
-                    this.velocity.y = framevelocity.y
-                    framevelocity.y = 0
-                }
-                if (obstacle.mass === 0) {
-                    this.velocity.y *= -1;
-                } else {
-                    const v11 = {
-                        x: this.velocity.x,
-                        y: this.velocity.y
-                    }
-                    this.velocity.x=(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
-                    this.velocity.y=(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-    
-                    obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
-                    obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                }
-            }
-            if (this.is_touching_top(obstacle, accuracy2)){
-                this.position.y -= pushback
-            }
-        
-            // Untere Seite des Hindernisses
-            if (this.is_touching_bottom(obstacle, accuracy1)) {
-                if (framevelocity.y != 0){
-                    this.velocity.y = framevelocity.y
-                    framevelocity.y = 0
-                }
-                if (obstacle.mass === 0) {
-                    this.velocity.y *= -1;
-                    this.position.y += 5
-                } else {
-                    const v11 = {
-                        x: this.velocity.x,
-                        y: this.velocity.y
-                    }
-                    this.velocity.x=(m1*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
-                    this.velocity.y=-(m1*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-
-                    obstacle.velocity.x=(2*m1*v11.x - m1*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(m1 + obstacle.mass)
-                    obstacle.velocity.y=(2*m1*v11.y - m1*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(m1 + obstacle.mass)
-                }
-            }
-            if(this.is_touching_bottom(obstacle, accuracy2)){
-                this.position.y += pushback
-            }
-        }
-
-        is_touching_right(obstacle, accuracy){
-            if(this.position.x - this.radius <= obstacle.position.x + obstacle.width &&
-                this.position.x - this.radius > obstacle.position.x + obstacle.width - accuracy &&
-                (this.position.y + this.radius > obstacle.position.y &&
-                this.position.y - this.radius < obstacle.position.y + obstacle.height)
-            ){
-                return true
-            } else {
-                return false
-            }
-        }
-    
-        is_touching_left(obstacle, accuracy){
-            if(this.position.x + this.radius >= obstacle.position.x &&
-                this.position.x + this.radius < obstacle.position.x + accuracy &&
-                (this.position.y + this.radius > obstacle.position.y &&
-                this.position.y - this.radius < obstacle.position.y + obstacle.height)
-            
-            ){
-                return true
-            } else {
-                return false
-            }
-        }
-    
-        is_touching_top(obstacle, accuracy){
-            if(this.position.y + this.radius >= obstacle.position.y &&
-                this.position.y + this.radius < obstacle.position.y + accuracy &&
-                (this.position.x + this.radius > obstacle.position.x &&
-                this.position.x - this.radius < obstacle.position.x + obstacle.width)
-            ){
-                return true
-            } else {
-                return false
-            }
-        }
-    
-        is_touching_bottom(obstacle, accuracy){
-            if(this.position.y - this.radius <= obstacle.position.y + obstacle.height &&
-                this.position.y - this.radius > obstacle.position.y + obstacle.height - accuracy &&
-                (this.position.x + this.radius > obstacle.position.x &&
-                this.position.x - this.radius < obstacle.position.x + obstacle.width)
-            ){
-                return true
-            } else {
-                return false
-            }
-        }
-
-        drawLine(){
-            c.beginPath();
-            c.moveTo(this.previousPositions.x[0], this.previousPositions.y[0]); // Start at the previous position
-            for(const counter in this.previousPositions.x){
-                c.lineTo(this.previousPositions.x[counter], this.previousPositions.y[counter]); // Draw to the current position
-            }
-            c.lineTo(this.position.x, this.position.y); // Draw to the current position
-            c.strokeStyle = "white"; // Line color
-            c.lineWidth = 2; // Line thickness
-            c.stroke();
-        }
-
-        draw(){
-                    c.beginPath();
-            // Erstelle einen radialen Farbverlauf
-            let gradient = c.createRadialGradient(this.position.x, this.position.y, 0, this.position.x, this.position.y, this.radius);
-            
-            // Füge Farben zum Farbverlauf hinzu: von der Mitte nach außen
-            gradient.addColorStop(0, '#00734e');  // Lila/Magenta für die Mitte (ähnlich der Enderperle)
-            gradient.addColorStop(0.5, '#00a84f'); // Dunkleres Lila/Magenta in der Mitte (noch intensiver)
-            gradient.addColorStop(1, '#1abc9c');  // Türkis für den Rand (heller und leuchtend)
-        
-
-            // Setze den Farbverlauf als Füllfarbe
-            c.fillStyle = gradient;
-            
-            // Zeichne den Kreis
-            c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-            c.fill();
-        }
-
-        update(){
-            for (let i = 0; i < allobstacles.length; i++) {
-                this.handleCollision(allobstacles[i])
-
-            }
-
-            if (this.position.x > 1000){
-                if(this.velocity.x > 0){
-                    framevelocity.x = this.velocity.x
-                } else {
-                    this.position.x += this.velocity.x
-                }
-                
-            } else if(this.position.x < 200){
-                if(this.velocity.x < 0){
-                    framevelocity.x = this.velocity.x
-                } else {
-                    this.position.x += this.velocity.x
-                }
-
-            } else {
-                this.position.x += this.velocity.x
-            }
-
-            if (this.position.y > 600){
-                if(this.velocity.y > 0){
-                    framevelocity.y = this.velocity.y
-                } else {
-                    this.position.y += this.velocity.y
-                }
-                
-            } else if(this.position.y < 200){
-                if(this.velocity.y < 0){
-                    framevelocity.y = this.velocity.y
-                } else {
-                    this.position.y += this.velocity.y
-                }
-
-            } else {
-                this.position.y += this.velocity.y
-            }
-
-            this.velocity.x *= friction //0.96
-            this.velocity.y *= friction
-
-            framevelocity.x *= friction
-            framevelocity.y *= friction
-
-            
-
-            this.draw()
-            if(this.recordposition === 1){
-                if(this.previousPositions.x.length >= 10){
-                    for(let counter = 0; counter < this.previousPositions.x.length-1; counter++){
-                        this.previousPositions.x[counter] = this.previousPositions.x[counter+1] - framevelocity.x
-                        this.previousPositions.y[counter] = this.previousPositions.y[counter+1] - framevelocity.y
-                    }
-                    this.previousPositions.x.pop()
-                    this.previousPositions.y.pop()
-                } else {
-                    this.previousPositions.x.push(this.position.x)
-                    this.previousPositions.y.push(this.position.y) 
-                }
-                this.drawLine()
-            }
-        }
-    }
-
-    class Obstacle {
-        constructor(width, height, posx, posy, mass) {
-            this.width = width
-            this.height = height
-            this.mass = mass //mass = 1 entspricht der Masse des Spielers
-            this.color = "red"
-
-            
-
-            //TODO change position according to width and according to height.
-            this.position = {
-                x: posx,
-                y: posy
-            }
-
-            this.velocity = {
-                x: 0,
-                y: 0
-            }
-            
-        }
-
-        handleCollision(obstacle) {
-            let accuracy2
-            if(obstacle.width < obstacle.height){
-                accuracy2 = obstacle.width/2
-            } else {
-                accuracy2 = obstacle.height/2
-            }
-
-            // Rechte Seite des Hindernisses
-            if (this.is_touching_right(obstacle, accuracy1)) {
-                if (obstacle.mass === 0) {
-                    this.velocity.x *= -1;
-                } else {
-                    const v11 = {
-                        x: this.velocity.x,
-                        y: this.velocity.y
-                    }
-                    this.velocity.x=-(this.mass*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(this.mass + obstacle.mass)
-                    this.velocity.y=(this.mass*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(this.mass + obstacle.mass)
-    
-                    obstacle.velocity.x=(2*this.mass*v11.x - this.mass*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(this.mass + obstacle.mass)
-                    obstacle.velocity.y=(2*this.mass*v11.y - this.mass*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(this.mass + obstacle.mass)
-                }
-            }
-            if (this.is_touching_right(obstacle, accuracy2)){
-                this.position.x += pushback;
-            }
-            
-        
-            // Linke Seite des Hindernisses
-            if (this.is_touching_left(obstacle, accuracy1)) {
-                if (obstacle.mass === 0) {
-                    this.velocity.x *= -1;
-                } else {
-                    const v11 = {
-                        x: this.velocity.x,
-                        y: this.velocity.y
-                    }
-                    this.velocity.x=-(this.mass*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(this.mass + obstacle.mass)
-                    this.velocity.y=(this.mass*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(this.mass + obstacle.mass)
-    
-                    obstacle.velocity.x=(2*this.mass*v11.x - this.mass*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(this.mass + obstacle.mass)
-                    obstacle.velocity.y=(2*this.mass*v11.y - this.mass*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(this.mass + obstacle.mass)
-                }
-            }
-            if (this.is_touching_left(obstacle, accuracy2)){
-                this.position.x -= pushback;
-            }
-        
-            // Obere Seite des Hindernisses
-            if (this.is_touching_top(obstacle, accuracy1)) {
-                if (obstacle.mass === 0) {
-                    this.velocity.y *= -1;
-                } else {
-                    const v11 = {
-                        x: this.velocity.x,
-                        y: this.velocity.y
-                    }
-                    this.velocity.x=(this.mass*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(this.mass + obstacle.mass)
-                    this.velocity.y=(this.mass*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(this.mass + obstacle.mass)
-    
-                    obstacle.velocity.x=(2*this.mass*v11.x - this.mass*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(this.mass + obstacle.mass)
-                    obstacle.velocity.y=(2*this.mass*v11.y - this.mass*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(this.mass + obstacle.mass)
-                }
-            }
-            if (this.is_touching_top(obstacle, accuracy2)){
-                this.position.y -= pushback;
-            }
-        
-            // Untere Seite des Hindernisses
-            if (this.is_touching_bottom(obstacle, accuracy1)) {
-                if (obstacle.mass === 0) {
-                    this.velocity.y *= -1;
-                    this.position.y += 5
-                } else {
-                    const v11 = {
-                        x: this.velocity.x,
-                        y: this.velocity.y
-                    }
-                    this.velocity.x=(this.mass*this.velocity.x - obstacle.mass*this.velocity.x + 2*obstacle.mass*obstacle.velocity.x)/(this.mass + obstacle.mass)
-                    this.velocity.y=-(this.mass*this.velocity.y - obstacle.mass*this.velocity.y + 2*obstacle.mass*obstacle.velocity.y)/(this.mass + obstacle.mass)
-
-                    obstacle.velocity.x=(2*this.mass*v11.x - this.mass*obstacle.velocity.x + obstacle.mass*obstacle.velocity.x)/(this.mass + obstacle.mass)
-                    obstacle.velocity.y=(2*this.mass*v11.y - this.mass*obstacle.velocity.y + obstacle.mass*obstacle.velocity.y)/(this.mass + obstacle.mass)
-                }
-            }
-            if (this.is_touching_bottom(obstacle, accuracy2)){
-                this.position.y += pushback;
-            }
-        }
-
-        is_touching_right(obstacle, accuracy){
-            if(this.position.x <= obstacle.position.x + obstacle.width &&
-                this.position.x > obstacle.position.x + obstacle.width - accuracy &&
-                (this.position.y + this.height > obstacle.position.y &&
-                this.position.y < obstacle.position.y + obstacle.height)
-            ){
-                return true
-            } else {
-                return false
-            }
-        }
-
-        is_touching_left(obstacle, accuracy){
-            if(this.position.x + this.width >= obstacle.position.x &&
-                this.position.x + this.width < obstacle.position.x + accuracy &&
-                (this.position.y + this.height > obstacle.position.y &&
-                this.position.y < obstacle.position.y + obstacle.height)
-            ){
-                return true
-            } else {
-                return false
-            }
-        }
-    
-        is_touching_top(obstacle, accuracy){
-            if(this.position.y + this.height >= obstacle.position.y &&
-                this.position.y + this.height < obstacle.position.y + accuracy &&
-                (this.position.x + this.width > obstacle.position.x &&
-                this.position.x < obstacle.position.x + obstacle.width)
-            ){
-                return true
-            } else {
-                return false
-            }
-        }
-    
-        is_touching_bottom(obstacle, accuracy){
-            if(this.position.y <= obstacle.position.y + obstacle.height &&
-                this.position.y > obstacle.position.y + obstacle.height - accuracy &&
-                (this.position.x + this.width > obstacle.position.x &&
-                this.position.x < obstacle.position.x + obstacle.width)
-            ){
-                return true
-            } else {
-                return false
-            }
-        }
-        
-        draw(){
-            c.beginPath();
-            c.rect(this.position.x, this.position.y, this.width, this.height);
-        
-            
-            let gradient = c.createRadialGradient(
-                this.position.x + this.width / 2,  // Mittelpunkt des Rechtecks in x
-                this.position.y + this.height / 2, // Mittelpunkt des Rechtecks in y
-                0,                                  // Innerer Radius (Mitte des Rechtecks)
-                this.position.x + this.width / 2,  // Mittelpunkt des Rechtecks in x
-                this.position.y + this.height / 2, // Mittelpunkt des Rechtecks in y
-                this.width / 2                      // Äußerer Radius (Rand des Rechtecks)
-            );
-        
-            // Füge Farben zum Farbverlauf hinzu: von innen nach außen
-            gradient.addColorStop(0, '#ff3333');  
-            if(this.mass === 0){
-                gradient.addColorStop(0, '#ff3333');
-                gradient.addColorStop(1, '#bd0f0f'); 
-            } else {
-                gradient.addColorStop(0, '#f54040');
-                gradient.addColorStop(1, '#d42222')
-            }
-            // Setze den Farbverlauf als Füllfarbe
-            c.fillStyle = gradient;
-            // Fülle das Rechteck
-            c.fill();     
-        }
-
-        update(){
-            if(this.mass != 0){
-                this.position.x += this.velocity.x - framevelocity.x
-                this.position.y += this.velocity.y - framevelocity.y
-                this.velocity.x *= friction
-                this.velocity.y *= friction
-
-                for (let i = 0; i < allobstacles.length; i++) {
-                    if (this != allobstacles[i]){
-                        this.handleCollision(allobstacles[i])
-                    }
-                    
-    
-                }
+let frameposition = {
+    x: 0,
+    y: 0
+}
 
 
-                this.draw()
-            } else {
-                this.position.x -= framevelocity.x
-                this.position.y -= framevelocity.y
-                this.draw()
-            }
-        }
-    }
-
-    /*
-    class Star {
-        constructor() {
-            this.position = {
-                x: 400,
-                y: 500  
-            }
-            this.img = new Image();  // Erstelle ein neues Image-Objekt
-            this.img.src = "star.jpg";   // Setze den Bildpfad
-            this.score = 0
-        }
-
-        relocate(){
-            this.position.x = Math.floor(Math.random() * (2200 - 100 + 1)) + 100 - frameposition.x
-            this.position.y = Math.floor(Math.random() * (1400 - 100 + 1)) + 100 - frameposition.y
-            const mitte={
-                x: this.position.x+15,
-                y: this.position.y+15
-            }
-            for (let i = 0; i < allobstacles.length; i++) {
-                if(
-                    mitte.x + 15 > allobstacles[i].position.x &&
-                    mitte.x - 15 < allobstacles[i].position.x + allobstacles[i].width &&
-                    mitte.y + 15 > allobstacles[i].position.y &&
-                    mitte.y - 15 < allobstacles[i].position.y + allobstacles[i].height
-                ){
-                    this.relocate()
-                }
-            }
-            
-        }
-        
-    
-        draw() {
-            c.drawImage(this.img, this.position.x, this.position.y, 30, 30);  // Zeichne das Bild
-        }
-
-        update(){
-            this.position.x -= framevelocity.x
-            this.position.y -= framevelocity.y
-
-            frameposition.x += framevelocity.x
-            frameposition.y += framevelocity.y
-
-            const mitte={
-                x: this.position.x+15,
-                y: this.position.y+15
-            }
-
-            if(
-                mitte.x-15 - player.position.x - player.radius < 0 &&
-                -mitte.x-15 + player.position.x - player.radius < 0 &&
-                mitte.y-15 - player.position.y - player.radius < 0 &&
-                -mitte.y-15 + player.position.y - player.radius < 0
-            ){
-                this.score += 1
-                document.getElementById("timer").innerText = this.score
-                this.relocate()
-            }
-        }
-    }
-    */
-
-
-    function calcboost(time){
-        let a = 5
-        let b = 0.8
-        let c = 1/3.5
-        time /= 1000
-        if (time < c){ 
-            let n = Math.log(a/b)/Math.log(2)
-            let m = a/(Math.pow(c,n))
-            //console.log(m*Math.pow(time,n))
-            if(m*Math.pow(time,n) > a-1){
-                player.startLine()
-            } else{
-                player.clearpreviousPositions()
-            }
-            
-            return m*Math.pow(time,n)
-            
-        } else {
+function calcboost(time){
+    let a = 5
+    let b = 0.8
+    let c = 1/3.5
+    time /= 1000
+    if (time < c){ 
+        let n = Math.log(a/b)/Math.log(2)
+        let m = a/(Math.pow(c,n))
+        //console.log(m*Math.pow(time,n))
+        if(m*Math.pow(time,n) > a-1){
             player.startLine()
-            //console.log(a)
-            return a
+        } else{
+            player.clearpreviousPositions()
         }
+        
+        return m*Math.pow(time,n)
+        
+    } else {
+        player.startLine()
+        //console.log(a)
+        return a
     }
+}
+
+
+let lastclick = Date.now()
+addEventListener("click", ({offsetX, offsetY}) => {
+    if(isRaceStarted){
+        player.endLine()
+
+        let alpha = Math.atan2((offsetY-player.position.y),(offsetX-player.position.x))
+        let boost = calcboost(Date.now()-lastclick)
+        //console.log(Date.now()-lastclick)
+        
+        player.velocity.x += Math.cos(alpha)*boost
+        player.velocity.y += Math.sin(alpha)*boost
+
+        lastclick = Date.now()
+    }
+    //console.log(offsetX-player.position.x)
 
     
-    let lastclick = Date.now()
-        addEventListener("click", ({offsetX, offsetY}) => {
-            if(isRaceStarted){
-                player.endLine()
-        
-                let alpha = Math.atan2((offsetY-player.position.y),(offsetX-player.position.x))
-                let boost = calcboost(Date.now()-lastclick)
-                //console.log(Date.now()-lastclick)
-                
-                player.velocity.x += Math.cos(alpha)*boost
-                player.velocity.y += Math.sin(alpha)*boost
-        
-                lastclick = Date.now()
-            }
-            //console.log(offsetX-player.position.x)
-    
-            
-        })
-
-        function starttimer() {
-            let beginDate = Date.now();
-            let currentTime = Date.now()-beginDate;
-            setInterval(()=>{
-                let colon = ""
-                currentTime = Date.now()-beginDate
-                if(currentTime/1000>=60){
-                    document.getElementById("minutes").style.display = "inline"
-                    document.getElementById("minutes").innerHTML = Math.floor(currentTime/1000/60)
-
-                    colon = ":"
-                    document.getElementById("seconds").style.width = "70px"
-                } else {
-                    document.getElementById("seconds").style.width = "60px"
-                }
-
-                if(Math.floor((Date.now()-beginDate)/1000%60)<10){
-                    document.getElementById("seconds").innerHTML = colon + "0" + Math.floor((Date.now()-beginDate)/1000%60)
-                } else {
-                    document.getElementById("seconds").innerHTML = colon + Math.floor((Date.now()-beginDate)/1000%60)
-                }
-                
-                let ms = Math.floor((Date.now()-beginDate)%1000)
-                if(ms<10){
-                    document.getElementById("milliseconds").innerHTML = ".00" + ms
-                } else if (ms < 100) {
-                    document.getElementById("milliseconds").innerHTML = ".0" + ms
-                } else {
-                    document.getElementById("milliseconds").innerHTML = "." + ms
-                }
-
-                
-                
+})
 
 
-                
-            }, 1)
+function starttimer() {
+    let beginDate = Date.now();
+    let currentTime = Date.now()-beginDate;
+    setInterval(()=>{
+        let colon = ""
+        currentTime = Date.now()-beginDate
+
+        if(currentTime/1000>=60){
+            document.getElementById("minutes").style.display = "inline"
+            document.getElementById("minutes").innerHTML = Math.floor(currentTime/1000/60)
+
+            colon = ":"
+            document.getElementById("seconds").style.width = "70px"
+        } else {
+            document.getElementById("seconds").style.width = "60px"
         }
 
-    
+        if(Math.floor((Date.now()-beginDate)/1000%60)<10){
+            document.getElementById("seconds").innerHTML = colon + "0" + Math.floor((Date.now()-beginDate)/1000%60)
+        } else {
+            document.getElementById("seconds").innerHTML = colon + Math.floor((Date.now()-beginDate)/1000%60)
+        }
+        
+        let ms = Math.floor((Date.now()-beginDate)%1000)
+        if(ms<10){
+            document.getElementById("milliseconds").innerHTML = ".00" + ms
+        } else if (ms < 100) {
+            document.getElementById("milliseconds").innerHTML = ".0" + ms
+        } else {
+            document.getElementById("milliseconds").innerHTML = "." + ms
+        }
+
+    }, 1)
+}
 
 
+function doLevel(level){
 
+    const svgUrl = "map" + level + ".svg"
+    fetch(svgUrl)
+    .then(response => response.text())  // Lade SVG als Text
+    .then(svgContent => {
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
+        console.log(svgDoc.querySelector('g').children)
+        const rectangle = Array.from(svgDoc.querySelector('g').children)
 
+        /*
+        console.log(rectangle)
+        console.log(rectangle[0].height.baseVal.value)
+        console.log(rectangle[0].width.baseVal.value)
+        console.log(rectangle[3].style.fill)
+        console.log(rectangle[2].querySelector('desc').innerHTML)
+        */
 
-
-    //--------------------------
-
-    let buttonRow = Array.from(document.getElementById("level-select").children);
-    let isRaceStarted = false
-
-
-    buttonRow.forEach(button => {
-        button.addEventListener("click", function(){
-            document.getElementById("timer").style.display = "flex";
-            document.getElementsByTagName("canvas")[0].style.display = "block";
-            document.getElementById("level-select").style.display = "none";
-            doLevel(button.textContent.toString())
-            
-            animate()
+        rectangle.forEach((element) => {
+            try{
+                if(element.style.fill === "rgb(254, 0, 0)"){
+                    console.log("rot")
+                    tempObstacle = new Obstacle(element.width.baseVal.value, element.height.baseVal.value, element.x.baseVal.value, element.y.baseVal.value, 0)
+                    allobstacles.push(tempObstacle)
+                } else if (element.style.fill === "rgb(255, 76, 76)"){
+                    console.log("sanft rot")
+                    tempObstacle = new Obstacle(element.width.baseVal.value, element.height.baseVal.value, element.x.baseVal.value, element.y.baseVal.value, element.querySelector('desc').innerHTML)
+                    allobstacles.push(tempObstacle)
+                } else if (element.style.fill === "rgb(0, 191, 130)"){
+                    console.log("türkis")
+                    player.position.x = element.x.baseVal.value + element.width.baseVal.value/2
+                    player.position.y = element.y.baseVal.value + element.height.baseVal.value/2
+                } else {
+                    console.log("farbe nicht erkannt")
+                }
+            } catch {
+                console.log("kein rechteck")
+            }
 
         });
+
+        }
+    )
+
+    setTimeout(function() {
+        isRaceStarted = true;
+        document.getElementById("minutes").style.display = "none"
+        starttimer()
         
-    });
+    }, 3000);
 
-
-
-
-
-    const player = new Player()
-    const allobstacles = [
-            new Obstacle(5400, 200, -200, -200, 0),
-            new Obstacle(5400, 200, -200, 2500, 0),
-            new Obstacle(200, 2900, -200, -200, 0),
-            new Obstacle(200, 2900, 5000, -200, 0)
-    ]
-
-    //test um schneller zu starten LÖSCHEN:
-    document.getElementById("timer").style.display = "flex";
-    document.getElementsByTagName("canvas")[0].style.display = "block";
-    document.getElementById("level-select").style.display = "none";
-    doLevel(1)
-    
-    animate()
-    //--------------------------
-
-    function doLevel(level){
-
-        const svgUrl = "map" + level + ".svg"
-        fetch(svgUrl)
-        .then(response => response.text())  // Lade SVG als Text
-        .then(svgContent => {
-            const parser = new DOMParser();
-            const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
-            console.log(svgDoc.querySelector('g').children)
-            const rectangle = Array.from(svgDoc.querySelector('g').children)
-
-            /*
-            console.log(rectangle)
-            console.log(rectangle[0].height.baseVal.value)
-            console.log(rectangle[0].width.baseVal.value)
-            console.log(rectangle[3].style.fill)
-            console.log(rectangle[2].querySelector('desc').innerHTML)
-            */
-
-            rectangle.forEach((element) => {
-                try{
-                    if(element.style.fill === "rgb(254, 0, 0)"){
-                        console.log("rot")
-                        tempObstacle = new Obstacle(element.width.baseVal.value, element.height.baseVal.value, element.x.baseVal.value, element.y.baseVal.value, 0)
-                        allobstacles.push(tempObstacle)
-                    } else if (element.style.fill === "rgb(255, 76, 76)"){
-                        console.log("sanft rot")
-                        tempObstacle = new Obstacle(element.width.baseVal.value, element.height.baseVal.value, element.x.baseVal.value, element.y.baseVal.value, element.querySelector('desc').innerHTML)
-                        allobstacles.push(tempObstacle)
-                    } else if (element.style.fill === "rgb(0, 191, 130)"){
-                        console.log("türkis")
-                        player.position.x = element.x.baseVal.value + element.width.baseVal.value/2
-                        player.position.y = element.y.baseVal.value + element.height.baseVal.value/2
-                    } else {
-                        console.log("farbe nicht erkannt")
-                    }
-                } catch {
-                    console.log("kein rechteck")
-                }
-
-            });
-
-            }
-        )
-
+    for (i=0; i<=3; i++){
+        document.getElementById("minutes").style.display = "inline"
+        let j = i
         setTimeout(function() {
-            isRaceStarted = true;
-            document.getElementById("minutes").style.display = "none"
-            starttimer()
-            
-        }, 3000);
+            document.getElementById("minutes").innerText = 3-j
+        }, j*1000);
+        console.log("2", i)
+    }
+}
 
-        for (i=0; i<=3; i++){
-            document.getElementById("minutes").style.display = "inline"
-            let j = i
-            setTimeout(function() {
-                document.getElementById("minutes").innerText = 3-j
-            }, j*1000);
-            console.log("2", i)
-        }
+
+
+//--------------------------
+
+let buttonRow = Array.from(document.getElementById("level-select").children);
+let isRaceStarted = false
+
+
+buttonRow.forEach(button => {
+    button.addEventListener("click", function(){
+        document.getElementById("timer").style.display = "flex";
+        document.getElementsByTagName("canvas")[0].style.display = "block";
+        document.getElementById("level-select").style.display = "none";
+        doLevel(button.textContent.toString())
         
+        animate()
+
+    });
+    
+});
 
 
 
+
+
+const player = new Player()
+const allobstacles = [
+        new Obstacle(5400, 200, -200, -200, 0),
+        new Obstacle(5400, 200, -200, 2500, 0),
+        new Obstacle(200, 2900, -200, -200, 0),
+        new Obstacle(200, 2900, 5000, -200, 0)
+]
+
+
+
+
+
+function animate(){
+    c.clearRect(0, 0, canvas.width, canvas.height)
+    
+    player.update()
+    player.draw()      
+
+    for (let i = 0; i < allobstacles.length; i++) {
+        allobstacles[i].update()
+        allobstacles[i].draw()
     }
 
     
 
+    requestAnimationFrame(animate)
+}
 
 
-
-
-    
-/*
-    const allobstacles1 = [
-        
-        new Obstacle(2300, 200, -100, -100, 0),
-        new Obstacle(2300, 200, -100, 1200, 0),
-        new Obstacle(200, 1500, -100, -100, 0),
-        new Obstacle(200, 1500, 2000, -100, 0),
-        
-        new Obstacle(200, 200, 100, 100, 0),
-        new Obstacle(50, 50, 500, 500, 2),
-        
-        new Obstacle(400, 400, 600, 0, 0),
-        new Obstacle(400, 80, 600, 410, 4),
-        new Obstacle(400, 250, 600, 500, 0),
-
-        new Obstacle(50, 80, 1500, 410, 0),
-        new Obstacle(100, 400, 1300, 800, 10),
-        new Obstacle(400, 100, 1500, 700, 0),
-
-        new Obstacle(300, 300, 1100, 320, 15),
-
-        new Obstacle(30, 30, 380, 1000, 0.1),
-        new Obstacle(30, 30, 380, 1030, 0.1),
-        new Obstacle(30, 30, 380, 1060, 0.1),
-        new Obstacle(30, 30, 410, 1000, 0.1),
-        new Obstacle(30, 30, 410, 1030, 0.1),
-        new Obstacle(30, 30, 410, 1060, 0.1),
-        new Obstacle(30, 30, 440, 1000, 0.1),
-        new Obstacle(30, 30, 440, 1030, 0.1),
-        new Obstacle(30, 30, 440, 1060, 0.1),
-
-        new Obstacle(50, 50, 680, 1030, 1),
-        new Obstacle(50, 50, 750, 1060, 1),
-
-
-
-    ];
-    */
-
-
-    
-
-
-    function animate(){
-        c.clearRect(0, 0, canvas.width, canvas.height)
-        
-        player.update()
-        player.draw()      
-
-        for (let i = 0; i < allobstacles.length; i++) {
-            allobstacles[i].update()
-            allobstacles[i].draw()
-        }
-
-        
-
-        requestAnimationFrame(animate)
-    }
-
-    
 

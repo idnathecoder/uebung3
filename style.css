@@ -41,7 +41,6 @@ canvas {
 }
 
 body > div > div {
-
     margin: 10px;
     width: 300px;
 
@@ -53,14 +52,11 @@ body > div > div {
     height: 100px;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     align-self: flex-end;
-    display: flex;
+    display: none;
     justify-content: flex-end;
     align-items: baseline;
     margin-right: 0px;
     padding: 10px;
-
-    
-    
 }
 
 #minutes {
@@ -68,17 +64,17 @@ body > div > div {
     display: none;
     width: 40px;
     margin: 0px;
-
 }
+
 #seconds {
     font-size: 50px;
     width: 70px;
     margin: 0px;
-
+    margin-top: 22px;
 }
+
 #milliseconds {
     font-size: 45px;
     width: 80px;
     margin: 0px;
-
 }

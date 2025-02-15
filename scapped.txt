@@ -218,3 +218,117 @@ function areRectanglesColliding2(rect1, rect2) {
 */
 
 
+
+
+
+
+
+
+
+
+
+
+
+/*
+    class Star {
+        constructor() {
+            this.position = {
+                x: 400,
+                y: 500  
+            }
+            this.img = new Image();  // Erstelle ein neues Image-Objekt
+            this.img.src = "star.jpg";   // Setze den Bildpfad
+            this.score = 0
+        }
+
+        relocate(){
+            this.position.x = Math.floor(Math.random() * (2200 - 100 + 1)) + 100 - frameposition.x
+            this.position.y = Math.floor(Math.random() * (1400 - 100 + 1)) + 100 - frameposition.y
+            const mitte={
+                x: this.position.x+15,
+                y: this.position.y+15
+            }
+            for (let i = 0; i < allobstacles.length; i++) {
+                if(
+                    mitte.x + 15 > allobstacles[i].position.x &&
+                    mitte.x - 15 < allobstacles[i].position.x + allobstacles[i].width &&
+                    mitte.y + 15 > allobstacles[i].position.y &&
+                    mitte.y - 15 < allobstacles[i].position.y + allobstacles[i].height
+                ){
+                    this.relocate()
+                }
+            }
+            
+        }
+        
+    
+        draw() {
+            c.drawImage(this.img, this.position.x, this.position.y, 30, 30);  // Zeichne das Bild
+        }
+
+        update(){
+            this.position.x -= framevelocity.x
+            this.position.y -= framevelocity.y
+
+            frameposition.x += framevelocity.x
+            frameposition.y += framevelocity.y
+
+            const mitte={
+                x: this.position.x+15,
+                y: this.position.y+15
+            }
+
+            if(
+                mitte.x-15 - player.position.x - player.radius < 0 &&
+                -mitte.x-15 + player.position.x - player.radius < 0 &&
+                mitte.y-15 - player.position.y - player.radius < 0 &&
+                -mitte.y-15 + player.position.y - player.radius < 0
+            ){
+                this.score += 1
+                document.getElementById("timer").innerText = this.score
+                this.relocate()
+            }
+        }
+    }
+    */
+
+
+
+    /*
+    const allobstacles1 = [
+        
+        new Obstacle(2300, 200, -100, -100, 0),
+        new Obstacle(2300, 200, -100, 1200, 0),
+        new Obstacle(200, 1500, -100, -100, 0),
+        new Obstacle(200, 1500, 2000, -100, 0),
+        
+        new Obstacle(200, 200, 100, 100, 0),
+        new Obstacle(50, 50, 500, 500, 2),
+        
+        new Obstacle(400, 400, 600, 0, 0),
+        new Obstacle(400, 80, 600, 410, 4),
+        new Obstacle(400, 250, 600, 500, 0),
+
+        new Obstacle(50, 80, 1500, 410, 0),
+        new Obstacle(100, 400, 1300, 800, 10),
+        new Obstacle(400, 100, 1500, 700, 0),
+
+        new Obstacle(300, 300, 1100, 320, 15),
+
+        new Obstacle(30, 30, 380, 1000, 0.1),
+        new Obstacle(30, 30, 380, 1030, 0.1),
+        new Obstacle(30, 30, 380, 1060, 0.1),
+        new Obstacle(30, 30, 410, 1000, 0.1),
+        new Obstacle(30, 30, 410, 1030, 0.1),
+        new Obstacle(30, 30, 410, 1060, 0.1),
+        new Obstacle(30, 30, 440, 1000, 0.1),
+        new Obstacle(30, 30, 440, 1030, 0.1),
+        new Obstacle(30, 30, 440, 1060, 0.1),
+
+        new Obstacle(50, 50, 680, 1030, 1),
+        new Obstacle(50, 50, 750, 1060, 1),
+
+
+
+    ];
+    */
