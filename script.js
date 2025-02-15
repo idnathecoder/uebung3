@@ -588,6 +588,8 @@
             }
         }
     }
+
+   
     
 
     function calcboost(time){
@@ -614,21 +616,28 @@
         }
     }
 
+    
     let lastclick = Date.now()
-    addEventListener("click", ({offsetX, offsetY}) => {
-        //console.log(offsetX-player.position.x)
-
-        player.endLine()
-
-        let alpha = Math.atan2((offsetY-player.position.y),(offsetX-player.position.x))
-        let boost = calcboost(Date.now()-lastclick)
-        //console.log(Date.now()-lastclick)
+        addEventListener("click", ({offsetX, offsetY}) => {
+            if(document.getElementsByTagName("canvas")[0].style.display === "block"){
+                player.endLine()
         
-        player.velocity.x += Math.cos(alpha)*boost
-        player.velocity.y += Math.sin(alpha)*boost
+                let alpha = Math.atan2((offsetY-player.position.y),(offsetX-player.position.x))
+                let boost = calcboost(Date.now()-lastclick)
+                //console.log(Date.now()-lastclick)
+                
+                player.velocity.x += Math.cos(alpha)*boost
+                player.velocity.y += Math.sin(alpha)*boost
+        
+                lastclick = Date.now()
+            }
+            //console.log(offsetX-player.position.x)
+    
+            
+        })
 
-        lastclick = Date.now()
-    })
+    
+    
 
 
 
@@ -636,61 +645,94 @@
 
     //--------------------------
 
-    const player = new Player()
-    const reward = new Star(500, 300)
+    let buttonRow = Array.from(document.getElementById("level-select").children);
 
-    const allobstacles = [
-        
-        new Obstacle(5400, 200, -200, -200, 0),
-        new Obstacle(5400, 200, -200, 2500, 0),
-        new Obstacle(200, 2900, -200, -200, 0),
-        new Obstacle(200, 2900, 5000, -200, 0)
-    ]
 
-    const svgUrl = "map1.svg"
-    fetch(svgUrl)
-    .then(response => response.text())  // Lade SVG als Text
-    .then(svgContent => {
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
-        console.log(svgDoc.querySelector('g').children)
-        const rectangle = Array.from(svgDoc.querySelector('g').children)
-
-        /*
-        console.log(rectangle)
-        console.log(rectangle[0].height.baseVal.value)
-        console.log(rectangle[0].width.baseVal.value)
-        console.log(rectangle[3].style.fill)
-        console.log(rectangle[2].querySelector('desc').innerHTML)
-        */
-
-        rectangle.forEach((element) => {
-            if(element.style.fill === "rgb(254, 0, 0)"){
-                console.log("rot")
-                tempObstacle = new Obstacle(element.width.baseVal.value, element.height.baseVal.value, element.x.baseVal.value, element.y.baseVal.value, 0)
-                allobstacles.push(tempObstacle)
-            } else if (element.style.fill === "rgb(255, 76, 76)"){
-                console.log("sanft rot")
-                tempObstacle = new Obstacle(element.width.baseVal.value, element.height.baseVal.value, element.x.baseVal.value, element.y.baseVal.value, element.querySelector('desc').innerHTML)
-                allobstacles.push(tempObstacle)
-            } else if (element.style.fill === "rgb(0, 191, 130)"){
-                console.log("türkis")
-                player.position.x = element.x.baseVal.value + element.width.baseVal.value/2
-                player.position.y = element.y.baseVal.value + element.height.baseVal.value/2
-            } else {
-                console.log("farbe nicht erkannt")
-            }
-                console.log(element)
+    buttonRow.forEach(button => {
+        button.addEventListener("click", function(){
+            document.getElementById("counter").style.display = "block";
+            document.getElementsByTagName("canvas")[0].style.display = "block";
+            document.getElementById("level-select").style.display = "none";
+            doLevel(button.textContent.toString())
+            
+            animate()
 
         });
+        
+    });
+    //button.addEventListener("click", function(){
+    
 
-        }
-    )
+    //});
+
+
+
+    const player = new Player()
+    const reward = new Star(500, 300)
+    const allobstacles = [
+            new Obstacle(5400, 200, -200, -200, 0),
+            new Obstacle(5400, 200, -200, 2500, 0),
+            new Obstacle(200, 2900, -200, -200, 0),
+            new Obstacle(200, 2900, 5000, -200, 0)
+    ]
+
+
+    function doLevel(level){
+
+        const svgUrl = "map" + level + ".svg"
+        fetch(svgUrl)
+        .then(response => response.text())  // Lade SVG als Text
+        .then(svgContent => {
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
+            console.log(svgDoc.querySelector('g').children)
+            const rectangle = Array.from(svgDoc.querySelector('g').children)
+
+            /*
+            console.log(rectangle)
+            console.log(rectangle[0].height.baseVal.value)
+            console.log(rectangle[0].width.baseVal.value)
+            console.log(rectangle[3].style.fill)
+            console.log(rectangle[2].querySelector('desc').innerHTML)
+            */
+
+            rectangle.forEach((element) => {
+                try{
+                    if(element.style.fill === "rgb(254, 0, 0)"){
+                        console.log("rot")
+                        tempObstacle = new Obstacle(element.width.baseVal.value, element.height.baseVal.value, element.x.baseVal.value, element.y.baseVal.value, 0)
+                        allobstacles.push(tempObstacle)
+                    } else if (element.style.fill === "rgb(255, 76, 76)"){
+                        console.log("sanft rot")
+                        tempObstacle = new Obstacle(element.width.baseVal.value, element.height.baseVal.value, element.x.baseVal.value, element.y.baseVal.value, element.querySelector('desc').innerHTML)
+                        allobstacles.push(tempObstacle)
+                    } else if (element.style.fill === "rgb(0, 191, 130)"){
+                        console.log("türkis")
+                        player.position.x = element.x.baseVal.value + element.width.baseVal.value/2
+                        player.position.y = element.y.baseVal.value + element.height.baseVal.value/2
+                    } else {
+                        console.log("farbe nicht erkannt")
+                    }
+                } catch {
+                    console.log("kein rechteck")
+                }
+
+            });
+
+            }
+        )
+
+
+    }
 
     
 
 
 
+
+
+    
+/*
     const allobstacles1 = [
         
         new Obstacle(2300, 200, -100, -100, 0),
@@ -727,27 +769,31 @@
 
 
     ];
+    */
 
+
+    
 
 
     function animate(){
         c.clearRect(0, 0, canvas.width, canvas.height)
-        
+
+
         reward.update()
         reward.draw()
         
         player.update()
         player.draw()      
 
-        
-
         for (let i = 0; i < allobstacles.length; i++) {
             allobstacles[i].update()
             allobstacles[i].draw()
         }
 
+        
+
         requestAnimationFrame(animate)
     }
 
-    animate()
+    
 

@@ -13,8 +13,31 @@ body > div {
     align-items: center;
 }
 
+#level-select {
+    background-color: inherit;
+    display: flex;
+    justify-content: space-evenly;
+    width: 1200px;
+    margin-bottom: 40px;
+
+}
+
+#level-select > button {
+    width: 15%;
+    aspect-ratio: 1;
+    font-size: 500%;
+    font-family: cherry bomb one;
+    color: aqua;
+    background-color: green;
+}
+
+#level-select > button:hover {
+    transform: rotate(5deg);
+}
+
 canvas {
     border: solid 1px rgb(255, 255, 255);
+    display: none;
 }
 
 body > div > div {
@@ -30,4 +53,5 @@ body > div > div {
     font-size: 50px;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     text-align: center;
+    display: none;
 }
