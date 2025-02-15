@@ -528,6 +528,7 @@
         }
     }
 
+    /*
     class Star {
         constructor() {
             this.position = {
@@ -583,14 +584,13 @@
                 -mitte.y-15 + player.position.y - player.radius < 0
             ){
                 this.score += 1
-                document.getElementById("counter").innerText = this.score
+                document.getElementById("timer").innerText = this.score
                 this.relocate()
             }
         }
     }
+    */
 
-   
-    
 
     function calcboost(time){
         let a = 5
@@ -619,7 +619,7 @@
     
     let lastclick = Date.now()
         addEventListener("click", ({offsetX, offsetY}) => {
-            if(document.getElementsByTagName("canvas")[0].style.display === "block"){
+            if(isRaceStarted){
                 player.endLine()
         
                 let alpha = Math.atan2((offsetY-player.position.y),(offsetX-player.position.x))
@@ -636,8 +636,47 @@
             
         })
 
+        function starttimer() {
+            let beginDate = Date.now();
+            let currentTime = Date.now()-beginDate;
+            setInterval(()=>{
+                let colon = ""
+                currentTime = Date.now()-beginDate
+                if(currentTime/1000>=60){
+                    document.getElementById("minutes").style.display = "inline"
+                    document.getElementById("minutes").innerHTML = Math.floor(currentTime/1000/60)
+
+                    colon = ":"
+                    document.getElementById("seconds").style.width = "70px"
+                } else {
+                    document.getElementById("seconds").style.width = "60px"
+                }
+
+                if(Math.floor((Date.now()-beginDate)/1000%60)<10){
+                    document.getElementById("seconds").innerHTML = colon + "0" + Math.floor((Date.now()-beginDate)/1000%60)
+                } else {
+                    document.getElementById("seconds").innerHTML = colon + Math.floor((Date.now()-beginDate)/1000%60)
+                }
+                
+                let ms = Math.floor((Date.now()-beginDate)%1000)
+                if(ms<10){
+                    document.getElementById("milliseconds").innerHTML = ".00" + ms
+                } else if (ms < 100) {
+                    document.getElementById("milliseconds").innerHTML = ".0" + ms
+                } else {
+                    document.getElementById("milliseconds").innerHTML = "." + ms
+                }
+
+                
+                
+
+
+                
+            }, 1)
+        }
+
     
-    
+
 
 
 
@@ -646,11 +685,12 @@
     //--------------------------
 
     let buttonRow = Array.from(document.getElementById("level-select").children);
+    let isRaceStarted = false
 
 
     buttonRow.forEach(button => {
         button.addEventListener("click", function(){
-            document.getElementById("counter").style.display = "block";
+            document.getElementById("timer").style.display = "flex";
             document.getElementsByTagName("canvas")[0].style.display = "block";
             document.getElementById("level-select").style.display = "none";
             doLevel(button.textContent.toString())
@@ -660,15 +700,12 @@
         });
         
     });
-    //button.addEventListener("click", function(){
-    
 
-    //});
+
 
 
 
     const player = new Player()
-    const reward = new Star(500, 300)
     const allobstacles = [
             new Obstacle(5400, 200, -200, -200, 0),
             new Obstacle(5400, 200, -200, 2500, 0),
@@ -676,6 +713,14 @@
             new Obstacle(200, 2900, 5000, -200, 0)
     ]
 
+    //test um schneller zu starten LÖSCHEN:
+    document.getElementById("timer").style.display = "flex";
+    document.getElementsByTagName("canvas")[0].style.display = "block";
+    document.getElementById("level-select").style.display = "none";
+    doLevel(1)
+    
+    animate()
+    //--------------------------
 
     function doLevel(level){
 
@@ -721,6 +766,24 @@
 
             }
         )
+
+        setTimeout(function() {
+            isRaceStarted = true;
+            document.getElementById("minutes").style.display = "none"
+            starttimer()
+            
+        }, 3000);
+
+        for (i=0; i<=3; i++){
+            document.getElementById("minutes").style.display = "inline"
+            let j = i
+            setTimeout(function() {
+                document.getElementById("minutes").innerText = 3-j
+            }, j*1000);
+            console.log("2", i)
+        }
+        
+
 
 
     }
@@ -777,10 +840,6 @@
 
     function animate(){
         c.clearRect(0, 0, canvas.width, canvas.height)
-
-
-        reward.update()
-        reward.draw()
         
         player.update()
         player.draw()      
