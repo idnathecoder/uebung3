@@ -40,23 +40,79 @@ canvas {
     display: none;
 }
 
-body > div > div {
-    margin: 10px;
-    width: 300px;
+#level-end-buttons{
+    display: none;
+    flex-direction: column;
+    position: absolute;
 
-    background-color: white;
-    align-content: center;
+
+    transform: translate(-350px, 175px);
+
+    gap: 30px;
+
 }
 
-#timer {
-    height: 100px;
+#level-end-buttons > button {
+    width: 180px;
+    aspect-ratio: 1;
+    padding: 0;
+    
+}
+
+#level-end-buttons > button > span {
+    font-size: 50px;
+    font-variation-settings: 'wght' 600;
+}
+
+#level-end-buttons > button:hover {
+    transform: rotate(5deg);
+}
+
+
+
+#bottom-displays {
+    display: flex;
+    justify-content: flex-end;     /*später space between*/
+    width: 100%;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    align-self: flex-end;
+    height: 100px;
+}
+
+.display {
+    background-color: white; 
+    height: 100px;
+    margin: 0;
+    font-size: 50px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+#rank {
+    width: 100px;
     display: none;
-    justify-content: flex-end;
-    align-items: baseline;
+}
+
+#user {
+    width: 600px;
+    gap: 20px;
+    display: none;
+}
+
+#user > input {
+    height: 50px;
+    font-size: 40px;
+    width: 400px;
+    size: 20;
+}
+    
+#timer {
     margin-right: 0px;
-    padding: 10px;
+    align-items: baseline;
+    width: 300px;
+    justify-content: flex-end;
+    
+    display: none;
 }
 
 #minutes {
@@ -71,10 +127,11 @@ body > div > div {
     width: 70px;
     margin: 0px;
     margin-top: 22px;
+    
 }
 
 #milliseconds {
-    font-size: 45px;
+    font-size: 35px;
     width: 80px;
     margin: 0px;
 }

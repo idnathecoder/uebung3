@@ -6,7 +6,7 @@
     <title>My Game</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700" />
 </head>
 <body>
     <div>
@@ -19,18 +19,41 @@
 
         </div>
         
-        <canvas width="1200 px", height="800 px"></canvas>
-        <div id="timer">
-            <p id="minutes"></p>
-            <p id="seconds"></p>
-            <p id="milliseconds"></p>
-        </div> 
+        <canvas width="1200 px", height="800 px">
+            
+        </canvas>
+        <div id="level-end-buttons">
+            <button>
+                <span class="material-symbols-outlined">home</span>
+            </button>
+            <button>
+                <span class="material-symbols-outlined">replay</span>
+            </button>
+        </div>
+        <div id="bottom-displays">
+            <div id="rank" class="display">
+                <p >a</p>
+            </div>
+            <div id="user" class="display">
+                <p>user: </p>
+                <input type="text" placeholder="sdf" maxlength="10" autofocus>
+            </div>
+            <div id="timer" class="display">
+                <p id="minutes">a</p>
+                <p id="seconds"></p>
+                <p id="milliseconds"></p>
+            </div> 
+        </div>
+        
     </div>
 
-    
+
     <script src="player.js"></script>
     <script src="obstacle.js"></script>
+    <script src="finish.js"></script>
+    
     <script src="script.js"></script>
+    
     
 </body>
 </html>
