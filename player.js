@@ -232,47 +232,53 @@ class Player {
 
         }
 
-        if (this.position.x > 1000){
-            if(this.velocity.x > 0){
-                framevelocity.x = this.velocity.x
+        if(isRaceStarted === true){ // wenn das Renne nicht läuft soll er sich nicht bewegen, da er sonst im nächsten rennen die Restgeschwindigkeit nutzen könnte, wenn v =friction*v passiert überschreibt das eventuell v=0 im anderen script
+            if (this.position.x > 1000){
+                if(this.velocity.x > 0){
+                    framevelocity.x = this.velocity.x
+                } else {
+                    this.position.x += this.velocity.x
+                }
+                
+            } else if(this.position.x < 200){
+                if(this.velocity.x < 0){
+                    framevelocity.x = this.velocity.x
+                } else {
+                    this.position.x += this.velocity.x
+                }
+
             } else {
                 this.position.x += this.velocity.x
             }
-            
-        } else if(this.position.x < 200){
-            if(this.velocity.x < 0){
-                framevelocity.x = this.velocity.x
-            } else {
-                this.position.x += this.velocity.x
-            }
 
-        } else {
-            this.position.x += this.velocity.x
-        }
+            if (this.position.y > 600){
+                if(this.velocity.y > 0){
+                    framevelocity.y = this.velocity.y
+                } else {
+                    this.position.y += this.velocity.y
+                }
+                
+            } else if(this.position.y < 200){
+                if(this.velocity.y < 0){
+                    framevelocity.y = this.velocity.y
+                } else {
+                    this.position.y += this.velocity.y
+                }
 
-        if (this.position.y > 600){
-            if(this.velocity.y > 0){
-                framevelocity.y = this.velocity.y
-            } else {
-                this.position.y += this.velocity.y
-            }
-            
-        } else if(this.position.y < 200){
-            if(this.velocity.y < 0){
-                framevelocity.y = this.velocity.y
             } else {
                 this.position.y += this.velocity.y
             }
-
-        } else {
-            this.position.y += this.velocity.y
-        }
-
+        
         this.velocity.x *= friction //0.96
         this.velocity.y *= friction
 
         framevelocity.x *= friction
         framevelocity.y *= friction
+    }
+
+        
+        
+        
 
         
 

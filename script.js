@@ -99,7 +99,7 @@ function starttimer() {
 
 
 function doLevel(level){
-    player.velocity = { x: 0, y: 0 };
+    //player.v wird schon auf 0 gesetzt bevor der canvas gezeigt wird
     document.getElementById("bottom-displays").style.justifyContent = "flex-end"
     allobstacles = [
         new Obstacle(5400, 200, -200, -200, 0),
@@ -108,8 +108,6 @@ function doLevel(level){
         new Obstacle(200, 2900, 5000, -200, 0)
     ]
 
-    
-    console.log("set v to 0")
     player.velocity.x = 0
     player.velocity.y = 0
 
@@ -199,12 +197,6 @@ document.getElementById("level-end-buttons").children[0].addEventListener("click
     document.getElementById("timer").style.display = "none"
     document.getElementById("seconds").style.display = "none"
     document.getElementById("milliseconds").style.display = "none"
-    
-    
-    
-    
-    console.log("f")
-
 
 
 })
@@ -225,9 +217,10 @@ let isRaceStarted = false
 buttonRow.forEach(button => {
     button.addEventListener("click", function(){
         document.getElementById("timer").style.display = "flex";
-        
-        
-        
+        player.velocity = { x: 0, y: 0 };
+        framevelocity = { x: 0, y: 0 };
+        player.clearpreviousPositions()
+        player.endLine()
         document.getElementsByTagName("canvas")[0].style.display = "block";
         document.getElementById("level-select").style.display = "none";
         doLevel(button.textContent.toString())
@@ -256,6 +249,7 @@ const finishline = new Finish(50,50,500,100)
 
 
 function animate(){
+    console.log(isRaceStarted)
     c.clearRect(0, 0, canvas.width, canvas.height)
     
     finishline.update()

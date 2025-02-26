@@ -54,7 +54,7 @@ class Finish{
             this.draw()
             if(this.is_touching_player() && 
             document.getElementById("bottom-displays").style.justifyContent != "space-between" && // !="space-between", weil, dann werden schon alle 3 displays angezeigt -> endLevel wurde schon durchgeführt
-            document.getElementById("milliseconds").style.display != "none"){ // != "none", weil es dass nur tun soll, wenn milliseconden gezeigt werden -> dann läuft der timer schon
+            isRaceStarted === true){ // soll es nur machen wenn das rennen läuft, nicht wenn das level aufgebaut wird, und er vom vorherigem level noch das ziel berührt
                 endLevel();
             }
     }
